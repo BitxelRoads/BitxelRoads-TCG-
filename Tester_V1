@@ -1,76 +1,85 @@
-import csv
-import pandas as pd
-import os
-from main import initialize_players, play_full_rotation, print_card_stats
+# 🚗 Bitxel Roads: Trading Card Game (TCG)
 
-# Crear una lista para almacenar resultados
-results = []
+# Bitxel Roads is a fast-paced turn-based Trading Card Game where NFT racing cars battle using performance stats, gadgets, and unpredictable Nitro boosts.
+# Build your deck, activate synergies, and outmaneuver your opponent!
 
-# Definir cantidad de partidas
-n_matches = 50
+# 🎮 How Does It Work?
 
-for match_number in range(1, n_matches + 1):
-    # Inicializar jugadores
-    p1, p2 = initialize_players()
+# Each player builds a deck of 3 cars and receives 1 Gadget. During each round:
 
-    # Reiniciar estado de cartas
-    for card in p1['deck'] + p2['deck']:
-        card['used_vars'] = []
-        card['cooldown'] = False
-        card['alt_defense_used'] = False
+# - Cars battle using one of four variables: Acceleration, Top Speed, Fuel, or Brakes.
+# - Gadgets can be activated using Mana Points (MP).
+# - The player who reduces their opponent’s FP (Fight Points) to 0 wins the match.
 
-    # Mostrar información de los jugadores antes de la partida
-    print(f"\n--- 🏁 Match {match_number} ---")
+# 🧩 Code Structure
 
-    print(f"\nPlayer 1 Gadget: {p1['gadget']['name']} | Mode: {p1['gadget']['mode']}")
-    print("Player 1 Deck:")
-    for car in p1['deck']:
-        print_card_stats(car)
+# The game engine is fully modular and divided into 15 core modules:
 
-    print(f"\nPlayer 2 Gadget: {p2['gadget']['name']} | Mode: {p2['gadget']['mode']}")
-    print("Player 2 Deck:")
-    for car in p2['deck']:
-        print_card_stats(car)
+# | Module | Functionality |
+# |--------|--------------|
+# | 1 | NFT Car Generator |
+# | 2 | Dual-mode Gadget Generator (Instant/Equipment) |
+# | 3 | Variable-Based Combat Logic |
+# | 4 | MP System + Gadget Activation |
+# | 5 | Synergies between Car Model + Protocol |
+# | 6 | Maneuverability & Tiebreaking |
+# | 7 | Full Round + Match Engine |
+# | 8 | Nitro System (Boosts with Risk) |
+# | 9 | Individual MP per Player |
+# | 10 | Real Effects of Active Gadgets |
+# | 11 | Alternative Defense (1 use per card) |
+# | 12 | Full Rotation Mode (each card fights once per phase) |
+# | 13 | Visual Enhancements (Print formatting) |
+# | 14 | Batch Testing System for Balancing |
+# | 15 | Game Modes Filter (Common, Diamond, Free) |
 
-    # Ejecutar la partida completa
-    play_full_rotation(p1, p2)
+# 🚀 How to Run
 
-    # Determinar resultado
-    if p1['fp'] > p2['fp']:
-        winner = 'Player 1'
-    elif p2['fp'] > p1['fp']:
-        winner = 'Player 2'
-    else:
-        winner = 'Draw'
+# 👉 1. Run a Single Match
 
-    # Resumen del deck (Modelos + Estrellas)
-    def deck_summary(deck):
-        return ' | '.join([f"{car['model']} ⭐{car['stars']}" for car in deck])
+# To play a single match and see live printed results:
 
-    # Agregar resultados a la lista
-    results.append({
-        'Match': match_number,
-        'Winner': winner,
-        'Player 1 FP': p1['fp'],
-        'Player 2 FP': p2['fp'],
-        'Player 1 Gadget': p1['gadget']['name'],
-        'Player 1 Gadget Mode': p1['gadget']['mode'],
-        'Player 2 Gadget': p2['gadget']['name'],
-        'Player 2 Gadget Mode': p2['gadget']['mode'],
-        'Player 1 Deck': deck_summary(p1['deck']),
-        'Player 2 Deck': deck_summary(p2['deck'])
-    })
+# python main.py
 
-# Crear DataFrame para visualizar
-df = pd.DataFrame(results)
+# This will show you:
+# - Deck composition.
+# - Chosen Gadget.
+# - Round-by-round combat logs.
+# - Final result.
 
-# Mostrar tabla en consola
-print("\n📊 Resultados del Test Batch:\n")
-print(df)
+# 👉 2. Run Batch Test for Balance (Recommended)
 
-# Exportar a CSV en la misma carpeta del script
-current_dir = os.path.dirname(os.path.abspath(__file__))
-csv_file = os.path.join(current_dir, 'batch_test_results.csv')
-df.to_csv(csv_file, index=False, encoding='utf-8-sig')
+# To simulate multiple matches in batch mode, collect results in a CSV, and balance your game:
 
-print(f"\n✅ Resultados exportados a {csv_file}\n")
+# python tester.py
+
+# The tester will:
+# - Simulate 50 matches automatically.
+# - Print the cars and gadgets drawn by each player before every duel.
+# - Show a full summary table of wins, performance points, and decks used.
+# - Export results to:
+#   batch_test_results.csv (saved in the same folder as the script).
+
+# This is useful for:
+# - Balancing car stats and gadget effects.
+# - Observing performance trends between car models and protocols.
+# - Preparing data for statistical analysis.
+
+# 📂 Output Example:
+
+# 📊 Resultados del Test Batch:
+
+# | Match | Winner | Player 1 FP | Player 2 FP | Player 1 Deck | Player 2 Deck |
+# |-------|--------|-------------|-------------|---------------|---------------|
+# | 1     | Player 1 | 18 | 12 | CarA ⭐2 | CarB ⭐3 |
+# | 2     | Player 2 | 15 | 20 | CarC ⭐1 | CarD ⭐2 |
+# ...
+
+# ✅ Results are automatically exported to:
+# batch_test_results.csv
+
+# 🎯 Pro Tip:
+
+# You can modify the number of matches by changing this line in tester.py:
+
+# n_matches = 50  # Change to any number you want!
