@@ -1,5 +1,6 @@
 import csv
 import pandas as pd
+import os
 from main import initialize_players, play_full_rotation, print_card_stats
 
 # Crear una lista para almacenar resultados
@@ -14,11 +15,6 @@ for match_number in range(1, n_matches + 1):
 
     # Reiniciar estado de cartas
     for card in p1['deck'] + p2['deck']:
-        card['used_vars'] = []
-        card['cooldown'] = False
-        card['alt_defense_used'] = False
-
-    for card in p2['deck']:
         card['used_vars'] = []
         card['cooldown'] = False
         card['alt_defense_used'] = False
@@ -72,7 +68,9 @@ df = pd.DataFrame(results)
 print("\n📊 Resultados del Test Batch:\n")
 print(df)
 
-# Exportar a CSV
-csv_file = r'D:\FINAL COLLECTION\CODES\NUEVOS CODES\batch_test_results.csv'
+# Exportar a CSV en la misma carpeta del script
+current_dir = os.path.dirname(os.path.abspath(__file__))
+csv_file = os.path.join(current_dir, 'batch_test_results.csv')
 df.to_csv(csv_file, index=False, encoding='utf-8-sig')
+
 print(f"\n✅ Resultados exportados a {csv_file}\n")
