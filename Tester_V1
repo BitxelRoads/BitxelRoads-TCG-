@@ -1,0 +1,78 @@
+import csv
+import pandas as pd
+from main import initialize_players, play_full_rotation, print_card_stats
+
+# Crear una lista para almacenar resultados
+results = []
+
+# Definir cantidad de partidas
+n_matches = 50
+
+for match_number in range(1, n_matches + 1):
+    # Inicializar jugadores
+    p1, p2 = initialize_players()
+
+    # Reiniciar estado de cartas
+    for card in p1['deck'] + p2['deck']:
+        card['used_vars'] = []
+        card['cooldown'] = False
+        card['alt_defense_used'] = False
+
+    for card in p2['deck']:
+        card['used_vars'] = []
+        card['cooldown'] = False
+        card['alt_defense_used'] = False
+
+    # Mostrar información de los jugadores antes de la partida
+    print(f"\n--- 🏁 Match {match_number} ---")
+
+    print(f"\nPlayer 1 Gadget: {p1['gadget']['name']} | Mode: {p1['gadget']['mode']}")
+    print("Player 1 Deck:")
+    for car in p1['deck']:
+        print_card_stats(car)
+
+    print(f"\nPlayer 2 Gadget: {p2['gadget']['name']} | Mode: {p2['gadget']['mode']}")
+    print("Player 2 Deck:")
+    for car in p2['deck']:
+        print_card_stats(car)
+
+    # Ejecutar la partida completa
+    play_full_rotation(p1, p2)
+
+    # Determinar resultado
+    if p1['fp'] > p2['fp']:
+        winner = 'Player 1'
+    elif p2['fp'] > p1['fp']:
+        winner = 'Player 2'
+    else:
+        winner = 'Draw'
+
+    # Resumen del deck (Modelos + Estrellas)
+    def deck_summary(deck):
+        return ' | '.join([f"{car['model']} ⭐{car['stars']}" for car in deck])
+
+    # Agregar resultados a la lista
+    results.append({
+        'Match': match_number,
+        'Winner': winner,
+        'Player 1 FP': p1['fp'],
+        'Player 2 FP': p2['fp'],
+        'Player 1 Gadget': p1['gadget']['name'],
+        'Player 1 Gadget Mode': p1['gadget']['mode'],
+        'Player 2 Gadget': p2['gadget']['name'],
+        'Player 2 Gadget Mode': p2['gadget']['mode'],
+        'Player 1 Deck': deck_summary(p1['deck']),
+        'Player 2 Deck': deck_summary(p2['deck'])
+    })
+
+# Crear DataFrame para visualizar
+df = pd.DataFrame(results)
+
+# Mostrar tabla en consola
+print("\n📊 Resultados del Test Batch:\n")
+print(df)
+
+# Exportar a CSV
+csv_file = r'D:\FINAL COLLECTION\CODES\NUEVOS CODES\batch_test_results.csv'
+df.to_csv(csv_file, index=False, encoding='utf-8-sig')
+print(f"\n✅ Resultados exportados a {csv_file}\n")
