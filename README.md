@@ -39,7 +39,7 @@
 
  To play a single match and see live printed results:
 
-# python main.py
+ python main.py
 
 # 👉 2. Run Batch Test for Balance (Recommended)
 
